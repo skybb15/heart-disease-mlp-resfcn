@@ -147,13 +147,16 @@ python main.py      # 训练 MLPNet 与 ResFCNet，打印指标并保存权重
 `main.py` 以相对路径读取同目录下的 `heart_statlog_cleveland_hungary_final.csv`，请在仓库根目录运行。训练产物（`*.pth`、`heart_preprocessor.pkl`）会写回当前目录，仓库中已附带一份训练结果可直接加载：
 
 ```python
+from preprocess import load_and_preprocess
 from utils import load_model
 from model_resnet import ResFCNet
 
-model = load_model(ResFCNet, input_dim=26, path='resfcnet_model.pth')
+X_train, X_test, y_train, y_test, preprocessor = load_and_preprocess(
+    'heart_statlog_cleveland_hungary_final.csv'
+)
+# 特征维度由 one-hot 后的实际列数决定，当前数据为 19 维
+model = load_model(ResFCNet, input_dim=X_train.shape[1], path='resfcnet_model.pth')
 ```
-
-> `input_dim` 取决于 one-hot 后的特征维度（由 `preprocess.py` 的列配置决定），实际使用时应先跑一遍 `load_and_preprocess` 取得 `X_train.shape[1]`。
 
 ---
 
